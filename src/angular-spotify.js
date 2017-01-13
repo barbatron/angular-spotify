@@ -276,6 +276,10 @@
           getSavedUserTracks: function (options) {
             return this.api('/me/tracks', 'GET', options, null, this._auth());
           },
+         
+          getLoggedInUsersPlaylists: function (options) {
+            return this.api('/me/playlists', 'GET', options, null, this._auth());
+          },
 
           userTracksContains: function (tracks) {
             tracks = angular.isString(tracks) ? tracks.split(',') : tracks;
