@@ -100,6 +100,54 @@
             return deferred.promise;
           },
 
+          fetchAll: function(endpoint, method, params, data, headers) {
+            var _this = this;
+            var defer = $q.defer();
+
+            // placeholder for our response
+            var buffer = {
+              items: []
+            };
+
+            function makeRequest(args) {
+              _this.api(endpoint, method, args, data, headers)
+                .then(addResultToBuffer) // eslint-disable-line no-use-before-define
+                .then(loadMoreIfNeeded) // eslint-disable-line no-use-before-define
+                .catch(function(err) {
+                  defer.reject(err);
+                });
+            }
+
+            function addResultToBuffer(response) {
+              angular.extend(buffer, response, {
+                items: buffer.items.concat(response.items)
+              });
+              return response;
+            }
+
+            function loadMoreIfNeeded(response) {
+              var pos = response.offset + response.items.length;
+              // check the offset (pos)
+              // but also check if we got back the same number of items that we requested
+              // otherwise we didn't have enough items for the last 'page' of the results
+              // and we reached the end
+              if (pos < response.total && response.items.length === response.limit) {
+                // have to load more items, using the new offset
+                makeRequest(angular.extend(params, {
+                  offset: pos
+                }));
+              } else {
+                // we're done loading
+                defer.resolve(buffer);
+              }
+            }
+
+            // start the request
+            makeRequest(params);
+
+            return defer.promise;
+          },
+
           _auth: function(isJson) {
             var auth = {
               'Authorization': 'Bearer ' + this.authToken
@@ -279,7 +327,7 @@
           },
 
           getLoggedInUsersPlaylists: function(options) {
-            return this.api('/me/playlists', 'GET', options, null, this._auth());
+            return this.fetchAll('/me/playlists', 'GET', options, null, this._auth());
           },
 
           userTracksContains: function(tracks) {
