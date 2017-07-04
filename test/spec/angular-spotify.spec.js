@@ -361,11 +361,15 @@ describe('angular-spotify', function () {
 
         spyOn(Spotify, 'api');
 
+        Spotify.setAuthToken('TESTING');
+
         Spotify.search('Nirvana', 'artist');
 
         expect(Spotify.api).toHaveBeenCalledWith('/search', 'GET', {
           q: 'Nirvana',
           type: 'artist'
+        }, null, {
+          'Authorization': 'Bearer TESTING'
         });
       });
 
@@ -376,7 +380,7 @@ describe('angular-spotify', function () {
 
         Spotify.search('Nirvana', 'artist').then(function (data) {
           expect(data).toBeDefined();
-          expect(data.artists.items.length).toBe(20);
+          expect(data.data.artists.items.length).toBe(20);
         });
 
         $httpBackend.flush();
@@ -394,7 +398,7 @@ describe('angular-spotify', function () {
         $httpBackend.flush();
         expect(result).toBeDefined();
         expect(result instanceof Object).toBeTruthy();
-        expect(result.error.status).toBe(400);
+        expect(result.data.error.status).toBe(400);
       });
 
     });
@@ -422,10 +426,14 @@ describe('angular-spotify', function () {
         it('should convert spotify uri to just an id', function () {
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getAlbum('spotify:album:0sNOF9WDwhWunNAHPD3Baj');
 
           expect(Spotify.api).toHaveBeenCalled();
-          expect(Spotify.api).toHaveBeenCalledWith('/albums/0sNOF9WDwhWunNAHPD3Baj');
+          expect(Spotify.api).toHaveBeenCalledWith('/albums/0sNOF9WDwhWunNAHPD3Baj', 'GET', null, null, {
+            'Authorization': 'Bearer TESTING'
+          });
         });
 
         it('should resolve to an object of an album', function () {
@@ -455,7 +463,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(404);
+          expect(result.data.error.status).toBe(404);
         });
       });
 
@@ -481,18 +489,22 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.albums instanceof Array).toBeTruthy();
-          expect(result.albums.length).toBe(3);
+          expect(result.data.albums instanceof Array).toBeTruthy();
+          expect(result.data.albums.length).toBe(3);
         });
 
         it('should convert spotify uris to ids', function () {
           spyOn(Spotify, 'api');
+
+          Spotify.setAuthToken('TESTING');
 
           Spotify.getAlbums('spotify:album:41MnTivkwTO3UUJ8DrqEJJ,spotify:album:6JWc4iAiJ9FjyK0B59ABb4,spotify:album:6UXCm6bOO4gFlDQZV5yL37');
 
           expect(Spotify.api).toHaveBeenCalled();
           expect(Spotify.api).toHaveBeenCalledWith('/albums', 'GET', {
             ids: '41MnTivkwTO3UUJ8DrqEJJ,6JWc4iAiJ9FjyK0B59ABb4,6UXCm6bOO4gFlDQZV5yL37'
+          }, null, {
+            'Authorization': 'Bearer TESTING'
           });
         });
 
@@ -509,8 +521,8 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.albums instanceof Array).toBeTruthy();
-          expect(result.albums.length).toBe(3);
+          expect(result.data.albums instanceof Array).toBeTruthy();
+          expect(result.data.albums.length).toBe(3);
         });
 
         it('should reject the promise and respond with error', function () {
@@ -525,7 +537,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -540,10 +552,13 @@ describe('angular-spotify', function () {
 
         it('should convert spotify uri to just an id', function () {
           spyOn(Spotify, 'api');
+          Spotify.setAuthToken('TESTING');
           Spotify.getAlbumTracks('spotify:album:0sNOF9WDwhWunNAHPD3Baj');
 
           expect(Spotify.api).toHaveBeenCalled();
-          expect(Spotify.api).toHaveBeenCalledWith('/albums/0sNOF9WDwhWunNAHPD3Baj/tracks', 'GET', undefined);
+          expect(Spotify.api).toHaveBeenCalledWith('/albums/0sNOF9WDwhWunNAHPD3Baj/tracks', 'GET', undefined, null, {
+            'Authorization': 'Bearer TESTING'
+          });
         });
 
         it('should resolve to an object of album tracks', function () {
@@ -559,7 +574,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.items.length).toBe(13);
+          expect(result.data.items.length).toBe(13);
         });
 
         it('should reject the promise and respond with error', function () {
@@ -576,7 +591,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(404);
+          expect(result.data.error.status).toBe(404);
         });
       });
     });
@@ -600,10 +615,14 @@ describe('angular-spotify', function () {
         it('should convert spotify uri to just an id', function () {
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getArtist('spotify:artist:0LcJLqbBmaGUft1e9Mm8HV');
 
           expect(Spotify.api).toHaveBeenCalled();
-          expect(Spotify.api).toHaveBeenCalledWith('/artists/0LcJLqbBmaGUft1e9Mm8HV');
+          expect(Spotify.api).toHaveBeenCalledWith('/artists/0LcJLqbBmaGUft1e9Mm8HV', 'GET', null, null, {
+            'Authorization': 'Bearer TESTING'
+          });
         });
 
         it('should resolve to an object of an artist', function () {
@@ -636,7 +655,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(404);
+          expect(result.data.error.status).toBe(404);
         });
       });
 
@@ -664,11 +683,15 @@ describe('angular-spotify', function () {
         it('should convert spotify uris to ids', function () {
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getArtists('spotify:artist:0oSGxfWSnnOXhD2fKuz2Gy,spotify:artist:3dBVyJ7JuOMt4GE9607Qin');
 
           expect(Spotify.api).toHaveBeenCalled();
           expect(Spotify.api).toHaveBeenCalledWith('/artists/', 'GET', {
             ids: '0oSGxfWSnnOXhD2fKuz2Gy,3dBVyJ7JuOMt4GE9607Qin'
+          }, null, {
+            'Authorization': 'Bearer TESTING'
           });
         });
 
@@ -691,7 +714,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -703,9 +726,13 @@ describe('angular-spotify', function () {
         it('should convert spotify uri to just an id', function () {
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getArtistAlbums('spotify:artist:0LcJLqbBmaGUft1e9Mm8HV');
           expect(Spotify.api).toHaveBeenCalled();
-          expect(Spotify.api).toHaveBeenCalledWith('/artists/0LcJLqbBmaGUft1e9Mm8HV/albums', 'GET', undefined);
+          expect(Spotify.api).toHaveBeenCalledWith('/artists/0LcJLqbBmaGUft1e9Mm8HV/albums', 'GET', undefined, null, {
+            'Authorization': 'Bearer TESTING'
+          });
         });
 
         it('should resolve to an array of artist albums', function () {
@@ -740,7 +767,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -753,11 +780,15 @@ describe('angular-spotify', function () {
 
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getArtistTopTracks('spotify:artist:0LcJLqbBmaGUft1e9Mm8HV', 'AU');
 
           expect(Spotify.api).toHaveBeenCalled();
           expect(Spotify.api).toHaveBeenCalledWith('/artists/0LcJLqbBmaGUft1e9Mm8HV/top-tracks', 'GET', {
             country: 'AU'
+          }, null, {
+            'Authorization': 'Bearer TESTING'
           });
         });
 
@@ -795,7 +826,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
 
         it('should reject if the country is not defined', function () {
@@ -817,7 +848,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -829,10 +860,14 @@ describe('angular-spotify', function () {
         it('should convert spotify uri to just an id', function () {
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getRelatedArtists('spotify:artist:0LcJLqbBmaGUft1e9Mm8HV');
 
           expect(Spotify.api).toHaveBeenCalled();
-          expect(Spotify.api).toHaveBeenCalledWith('/artists/0LcJLqbBmaGUft1e9Mm8HV/related-artists');
+          expect(Spotify.api).toHaveBeenCalledWith('/artists/0LcJLqbBmaGUft1e9Mm8HV/related-artists', 'GET', null, null, {
+            'Authorization': 'Bearer TESTING'
+          });
         });
 
         it('should resolve to an array of artists', function () {
@@ -869,7 +904,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
     });
@@ -894,10 +929,14 @@ describe('angular-spotify', function () {
 
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getTrack('spotify:artist:0eGsygTp906u18L0Oimnem');
 
           expect(Spotify.api).toHaveBeenCalled();
-          expect(Spotify.api).toHaveBeenCalledWith('/tracks/0eGsygTp906u18L0Oimnem');
+          expect(Spotify.api).toHaveBeenCalledWith('/tracks/0eGsygTp906u18L0Oimnem', 'GET', null, null, {
+            'Authorization': 'Bearer TESTING'
+          });
         });
 
         it('should resolve to an object of a track', function () {
@@ -934,7 +973,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -961,11 +1000,15 @@ describe('angular-spotify', function () {
         it('should convert spotify uris to Ids', function () {
           spyOn(Spotify, 'api');
 
+          Spotify.setAuthToken('TESTING');
+
           Spotify.getTracks('spotify:track:0eGsygTp906u18L0Oimnem,spotify:track:1lDWb6b6ieDQ2xT7ewTC3G');
 
           expect(Spotify.api).toHaveBeenCalled();
           expect(Spotify.api).toHaveBeenCalledWith('/tracks/', 'GET', {
             ids: '0eGsygTp906u18L0Oimnem,1lDWb6b6ieDQ2xT7ewTC3G'
+          }, null, {
+            'Authorization': 'Bearer TESTING'
           });
         });
 
@@ -988,7 +1031,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -1045,7 +1088,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -1102,7 +1145,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(400);
+          expect(result.data.error.status).toBe(400);
         });
       });
 
@@ -1414,7 +1457,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.error.status).toBe(404);
+          expect(result.data.error.status).toBe(404);
         });
       });
 
@@ -1791,8 +1834,8 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.message).toBeDefined();
-          expect(result.playlists).toBeDefined();
+          expect(result.data.message).toBeDefined();
+          expect(result.data.playlists).toBeDefined();
         });
 
       });
@@ -1825,7 +1868,7 @@ describe('angular-spotify', function () {
           $httpBackend.flush();
           expect(result).toBeDefined();
           expect(result instanceof Object).toBeTruthy();
-          expect(result.albums).toBeDefined();
+          expect(result.data.albums).toBeDefined();
         });
 
       });
