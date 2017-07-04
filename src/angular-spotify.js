@@ -91,10 +91,10 @@
               headers: headers,
               withCredentials: false
             })
-            .then(function (data) {
+              .then(function(data) {
                 deferred.resolve(data);
               })
-            .catch(function (data) {
+              .catch(function(data) {
                 deferred.reject(data);
               });
             return deferred.promise;
@@ -126,12 +126,12 @@
             }
 
             function loadMoreIfNeeded(response) {
-              var pos = response.offset + response.items.length;
+              var pos = response.offset + response.data.items.length;
               // check the offset (pos)
               // but also check if we got back the same number of items that we requested
               // otherwise we didn't have enough items for the last 'page' of the results
               // and we reached the end
-              if (pos < response.total && response.items.length === response.limit) {
+              if (pos < response.total && response.data.items.length === response.limit) {
                 // have to load more items, using the new offset
                 makeRequest(angular.extend(params, {
                   offset: pos
