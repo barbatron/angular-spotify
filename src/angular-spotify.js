@@ -524,6 +524,11 @@
             return this.api('/audio-features/' + track, 'GET', null, null, this._auth());
           },
 
+          getTrackAudioAnalysis: function(track) {
+            track = track.indexOf('spotify:') === -1 ? track : track.split(':')[2];
+            return this.api('/audio-analysis/' + track, 'GET', null, null, this._auth());
+          },
+
           getTracksAudioFeatures: function(tracks) {
             tracks = angular.isString(tracks) ? tracks.split(',') : tracks;
             angular.forEach(tracks, function(value, index) {
